@@ -180,15 +180,15 @@ struct ContentView: View {
             .padding()
             
             HStack {
-                Button("Play Drawing") {
+                Button("Play") {
                     viewModel.playDrawingWithSmoothAnimation()
                 }
                 .padding()
-                .background(Color.gray)
+                .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(10)
                 
-                Button("Clear Canvas") {
+                Button("Pulisci la tela") {
                     viewModel.clearCanvas()
                 }
                 .padding()
