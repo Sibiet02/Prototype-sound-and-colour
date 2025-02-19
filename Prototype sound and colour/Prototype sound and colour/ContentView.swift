@@ -152,7 +152,7 @@ struct DrawingCanvasView: View {
                 .stroke(currentStroke.color, lineWidth: 8)
             }
         }
-        .frame(width: 1000, height: 1000)
+        .frame(width: 1000, height: 800)
         .border(Color.black)
     }
 }
