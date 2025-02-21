@@ -1,12 +1,12 @@
 import SwiftUI
 import AVFoundation
 
-// MARK: - MODELLO PER IL TRATTO
+
 struct Stroke {
     var color: Color
     var note: String
     var points: [CGPoint]
-    var progress: CGFloat = 1.0  // Default a 1.0 per mostrare subito i nuovi tratti
+    var progress: CGFloat = 1.0
 }
 
 // MARK: - SOUND MANAGER
@@ -19,10 +19,10 @@ class SoundManager {
                 audioPlayer = try AVAudioPlayer(contentsOf: url)
                 audioPlayer?.play()
             } catch {
-                print("Errore nella riproduzione di \(note).mp3: \(error)")
+                print("Error \(note).mp3: \(error)")
             }
         } else {
-            print("File audio \(note).mp3 non trovato!")
+            print("File audio \(note).mp3 not found!")
         }
     }
     
@@ -31,7 +31,7 @@ class SoundManager {
     }
 }
 
-// MARK: - VIEWMODEL
+
 class DrawingViewModel: ObservableObject {
     @Published var strokes: [Stroke] = []
     @Published var currentStroke: Stroke?
@@ -47,7 +47,7 @@ class DrawingViewModel: ObservableObject {
     
     func startStroke(at point: CGPoint) {
         var newStroke = Stroke(color: currentColor, note: currentNote, points: [point])
-        newStroke.progress = 1.0  // Mostra subito il tratto in fase di disegno
+        newStroke.progress = 1.0
         currentStroke = newStroke
     }
     
@@ -66,10 +66,9 @@ class DrawingViewModel: ObservableObject {
         strokes.removeAll()
     }
     
-    // MARK: - Animazione Fluida del Disegno
     func playDrawingWithSmoothAnimation() {
-        stopAnimation()  // Stop eventuali animazioni precedenti
-        resetProgress()  // Reset progress per ogni tratto
+        stopAnimation()
+        resetProgress()
         
         var strokeIndex = 0
         animationTimer = Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true) { _ in
@@ -78,10 +77,10 @@ class DrawingViewModel: ObservableObject {
                 if self.strokes[strokeIndex].progress >= 1.0 {
                     self.strokes[strokeIndex].progress = 1.0
                     self.replayStroke(self.strokes[strokeIndex])
-                    strokeIndex += 1  // Passa al tratto successivo
+                    strokeIndex += 1
                 }
             } else {
-                self.stopAnimation()  // Ferma l'animazione alla fine
+                self.stopAnimation()
             }
         }
     }
@@ -95,10 +94,9 @@ class DrawingViewModel: ObservableObject {
         for index in strokes.indices {
             strokes[index].progress = 0.0
         }
-        currentStroke?.progress = 1.0  // Continua a mostrare il tratto corrente
+        currentStroke?.progress = 1.0
     }
     
-    // Suona solo durante il Play Drawing
     private func replayStroke(_ stroke: Stroke) {
         soundManager.playNote(stroke.note)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
@@ -107,7 +105,6 @@ class DrawingViewModel: ObservableObject {
     }
 }
 
-// MARK: - CANVAS VIEW
 struct DrawingCanvasView: View {
     @ObservedObject var viewModel: DrawingViewModel
     
@@ -180,7 +177,7 @@ struct ContentView: View {
             .padding()
             
             HStack {
-                Button("Play") {
+                Button("Play Drawing") {
                     viewModel.playDrawingWithSmoothAnimation()
                 }
                 .padding()
@@ -188,7 +185,7 @@ struct ContentView: View {
                 .foregroundColor(.white)
                 .cornerRadius(10)
                 
-                Button("Pulisci la tela") {
+                Button("Clear Canvas") {
                     viewModel.clearCanvas()
                 }
                 .padding()
